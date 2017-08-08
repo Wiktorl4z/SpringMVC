@@ -1,17 +1,16 @@
 package com.wiktor.demo;
 
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("employees")
 @RestController
 public class EmployeeController {
-    @RequestMapping("getEmployees")
-    public List<Employee> getEmployees(){
+    @PostMapping("getEmployees")
+    public List<Employee> getEmployees() {
 
         List<Employee> result = new ArrayList<>();
 
@@ -20,5 +19,10 @@ public class EmployeeController {
         result.add(new Employee("Grzego", "Loskko", new BigDecimal(123)));
 
         return result;
+    }
+
+    @RequestMapping(value = "findAny", method = {RequestMethod.POST , RequestMethod.GET})
+    public Employee findAny() {
+        return new Employee("Michał", "Trynki", new BigDecimal(434));
     }
 }

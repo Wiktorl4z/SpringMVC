@@ -3,10 +3,7 @@ package com.wiktor.demo;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping("${urls.company.root}")
@@ -55,7 +52,7 @@ public class CompanyController {
             @PathVariable String companyName,
             @RequestParam String firstName, // gdy mamy taka adnotacje trzeba bedzie dodać wartosci
             @RequestParam String lastName,
-            @RequestParam (required = false ) BigDecimal salary   // tego pola nie trzeba bedzie dodawac
+            @RequestParam(required = false) BigDecimal salary   // tego pola nie trzeba bedzie dodawac
     ) {
         Company orignal = companyRepository.findOne(companyName);
         List<Employee> employees = new ArrayList<>(orignal.getEmployees());
@@ -65,6 +62,35 @@ public class CompanyController {
         companyRepository.save(newCompany);
         return employee;
     }
+
+    @PostMapping("/{companyName}/employees/create")
+    List<Employee> addEmployees(
+            @PathVariable String companyName,
+            @RequestBody AddEmployeesRequest request
+
+    ) {
+        Company orignal = companyRepository.findOne(companyName);
+        List<Employee> employees = new ArrayList<>(orignal.getEmployees());
+        List<Employee> newEmployees = createEmployees(request.getEmployees());
+        employees.addAll(newEmployees);
+        Company newCompany = new Company(orignal.getName(), employees);
+        companyRepository.save(newCompany);
+        return employees;
+    }
+    
+    /**
+     * @param employees
+     * @return Ze starej listy literujemy po kazdym z pracownikow. Tworzymy nowke sztukę, przypisujemy mu imie, nazwisko i
+     * pensje oraz identyfikator.
+     */
+
+    private List<Employee> createEmployees(List<Employee> employees) {
+        return employees
+                .stream()
+                .map(employee -> new Employee(Employee.getNextEmployeeId(),
+                        employee.getFirstName(),
+                        employee.getLastName(),
+                        employee.getSalary()))
+                .collect(Collectors.toList());
+    }
 }
-
-

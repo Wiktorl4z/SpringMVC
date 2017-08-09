@@ -3,6 +3,7 @@ package com.wiktor.demo;
 import java.util.List;
 
 public class AddEmployeesRequest {
+
     private List<Employee> employees;
 
     public List<Employee> getEmployees() {

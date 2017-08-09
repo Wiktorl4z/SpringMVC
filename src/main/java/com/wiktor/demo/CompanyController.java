@@ -4,10 +4,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping(value = "${urls.company.root}", produces = MediaType.APPLICATION_XML_VALUE) // dzieki temu mozemy
@@ -21,7 +19,14 @@ public class CompanyController {
     }
 
     @GetMapping
-    List<Company> findAll() {
+    List<Company> findAll(
+            Locale locale,
+            ZoneId zoneId,
+            @CookieValue("my_cookie") String my_cookie,
+            @RequestHeader Map<String, String> headers,
+            @RequestHeader ("host") String client
+
+    ) {
         return companyRepository.findAll();
     }
 

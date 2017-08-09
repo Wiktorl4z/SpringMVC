@@ -1,0 +1,5 @@
+urls:
+  company:
+    root: companies
+    employees:
+      root: employees

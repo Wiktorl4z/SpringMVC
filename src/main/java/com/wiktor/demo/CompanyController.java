@@ -1,6 +1,9 @@
 package com.wiktor.demo;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -24,7 +27,7 @@ public class CompanyController {
             ZoneId zoneId,
             @CookieValue("my_cookie") String my_cookie,
             @RequestHeader Map<String, String> headers,
-            @RequestHeader ("host") String client
+            @RequestHeader("host") String client
 
     ) {
         return companyRepository.findAll();
@@ -32,15 +35,19 @@ public class CompanyController {
 
     //   @RequestMapping(method = RequestMethod.GET)
     @GetMapping("/{companyName}")
-    Company findOne(@PathVariable("companyName") String name) {
-        return companyRepository.findOne(name);
+    HttpEntity<Company> findOne(@PathVariable("companyName") String name) {
+        Company company = companyRepository.findOne(name);
+        if (company != null) {
+            return ResponseEntity.ok(company);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{companyName}/${urls.company.employees.root}/{firstName}")
     List<Employee> findCompanyEmployeesWithFirstName(
             @PathVariable String companyName, // jezeli jest taka sama nazwa nie musimy pisac
             @PathVariable("firstName") String name) {
-        return findOne(companyName)
+        return companyRepository.findOne(companyName)
                 .getEmployees()
                 .stream()
                 .filter(employee -> Objects.equals(employee.getFirstName(), name))
@@ -49,7 +56,7 @@ public class CompanyController {
 
     @GetMapping("/{companyName}/${urls.company.employees.root}/{lastName}/{firstName}")
     List<Employee> findCompanyEmployeesWithLastNameAndFirstName(@PathVariable Map<String, String> pathVariable) {
-        return findOne(pathVariable.get("companyName"))
+        return companyRepository.findOne(pathVariable.get("companyName"))
                 .getEmployees()
                 .stream()
                 .filter(employee -> Objects.equals(employee.getLastName(), pathVariable.get("lastName")))

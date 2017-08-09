@@ -1,12 +1,17 @@
 package com.wiktor.demo;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-@RequestMapping("${urls.company.root}")
+@RequestMapping(value = "${urls.company.root}", produces = MediaType.APPLICATION_XML_VALUE) // dzieki temu mozemy
+// tylko zobaczyc w xml
 @RestController
 public class CompanyController {
     private final CompanyRepository companyRepository;
@@ -77,7 +82,7 @@ public class CompanyController {
         companyRepository.save(newCompany);
         return employees;
     }
-    
+
     /**
      * @param employees
      * @return Ze starej listy literujemy po kazdym z pracownikow. Tworzymy nowke sztukę, przypisujemy mu imie, nazwisko i

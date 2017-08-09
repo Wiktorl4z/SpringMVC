@@ -52,7 +52,10 @@ public class CompanyController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/{companyName}/employees")
+    @PostMapping(value = "/{companyName}/employees",
+            produces = MediaType.APPLICATION_XML_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+        // mozemy dodac kod w JSON a produces zamieni na XML
     Employee addEmployee(
             @PathVariable String companyName,
             @RequestParam String firstName, // gdy mamy taka adnotacje trzeba bedzie dodać wartosci
